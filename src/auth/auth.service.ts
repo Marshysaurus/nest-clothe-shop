@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,6 +16,8 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger();
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -56,7 +59,19 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (password)');
     }
 
+    delete user.password;
+
     return { ...user, token: this.generateJWT({ id: user.id }) };
+  }
+
+  async checkAuthStatus(user: User) {
+    try {
+      const verification = this.jwtService.verify(user.id);
+
+      console.log(verification);
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   private generateJWT(payload: JwtPayload) {
