@@ -31,10 +31,9 @@ export class AuthController {
     return this.authService.login(loginUserDto);
   }
 
-  @Get('check-auth-status')
+  @Get('check-status')
   @Auth()
   checkAuthStatus(@GetUser() user: User) {
-    console.log(user);
     return this.authService.checkAuthStatus(user);
   }
 

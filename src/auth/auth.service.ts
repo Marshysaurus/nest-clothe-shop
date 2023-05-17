@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -12,7 +13,6 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -65,13 +65,7 @@ export class AuthService {
   }
 
   async checkAuthStatus(user: User) {
-    try {
-      const verification = this.jwtService.verify(user.id);
-
-      console.log(verification);
-    } catch (error) {
-      this.logger.error(error);
-    }
+    return { ...user, token: this.generateJWT({ id: user.id }) };
   }
 
   private generateJWT(payload: JwtPayload) {
@@ -85,6 +79,7 @@ export class AuthService {
       throw new BadRequestException(error.detail);
     }
 
+    this.logger.error(error);
     throw new Error('Internal error: check server logs');
   }
 }

@@ -5,13 +5,18 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
+
 import { Observable } from 'rxjs';
+
 import { User } from 'src/auth/entities/user.entity';
 import { META_ROLES } from 'src/auth/decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
+  private readonly logger = new Logger('UserRole');
+
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(
