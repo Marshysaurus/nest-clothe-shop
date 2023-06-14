@@ -40,3 +40,11 @@ yarn start:dev
 ```
 http://localhost/3000/api/seed
 ```
+
+# Productions notes:
+
+Must login with heroku account
+
+```
+heroku login
+```
